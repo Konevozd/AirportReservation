@@ -32,15 +32,11 @@ public class Utility {
 	
 	public static HashMap<String, String> loadHashMap(String filename) {
 		HashMap<String, String> pom = new HashMap<>();
-		boolean end = false;
+		String line = "";
 		try(BufferedReader out = new BufferedReader(new FileReader(filename))){
-			while(!end) {
-				String username = out.readLine();
-				if(username != null) {
-					String password = out.readLine();
-					pom.put(username, password);
-				} else
-					end = true;
+			while((line = out.readLine()) != null) {
+				String[] array = line.split(",");
+				pom.put(array[0], array[1]);
 			}
 			out.close();
 		} catch (IOException e) {
@@ -50,13 +46,40 @@ public class Utility {
 		return pom;
 	}
 	
-	public static void addNewUser(String username, String password) {
-		try(PrintWriter out = new PrintWriter(new FileWriter("users.txt", true))){
-			out.println(username);
-			out.println(password);
+	public static boolean exists(String username, String password) {
+		boolean exists = false;
+		
+		try(BufferedReader in = new BufferedReader(new FileReader("users.txt"))){
+			String line = "";
+			
+			while((line = in.readLine()) != null) {
+				String[] arr = line.split(",");
+				if(arr[0].equals(username)) {
+					exists = true;
+					break;
+				}
+			}
+			
+			in.close();
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+		
+		return exists;
+	}
+	
+	public static boolean addNewUser(String username, String password) {
+		boolean in = false;
+		try(PrintWriter out = new PrintWriter(new FileWriter("users.txt", true))){
+			if(!exists(username,password)) {
+				out.println(username + "," + password);
+				in = true;
+			}
+			out.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		return in;
 	}
 	
 }

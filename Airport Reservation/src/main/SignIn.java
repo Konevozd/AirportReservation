@@ -84,7 +84,8 @@ public class SignIn extends JDialog {
 	        @Override
 	        public void windowClosing(WindowEvent e)
 	        {
-	            e.getWindow().dispose();
+//	            e.getWindow().dispose();
+	        	dispose();
 	        }
 	    });
 	}
@@ -127,9 +128,12 @@ public class SignIn extends JDialog {
 					username = textUsername.getText();
 					password = textPassword.getText();
 					made = true;
-					Utility.addNewUser(username, password);
-					JOptionPane.showMessageDialog(signIn, "A simple Swing application inspired by the life and work of John Lennon.");
-					signIn.setVisible(false);
+					if(Utility.addNewUser(username, password)) {
+						JOptionPane.showMessageDialog(signIn, "Welcome to our family. :)");
+						signIn.setVisible(false);
+					} else {
+						JOptionPane.showMessageDialog(signIn, "You are already part of our family. :)");
+					}
 					dispose();
 				}
 			});
